@@ -1,0 +1,370 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0E2735A42470349500A946D5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E2735A32470349500A946D5 /* MainView.swift */; };
+		0E453F3F245FCEFA00A48209 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F3E245FCEFA00A48209 /* AppDelegate.swift */; };
+		0E453F41245FCEFA00A48209 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F40245FCEFA00A48209 /* ContentView.swift */; };
+		0E453F43245FCEFC00A48209 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0E453F42245FCEFC00A48209 /* Assets.xcassets */; };
+		0E453F46245FCEFC00A48209 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0E453F45245FCEFC00A48209 /* Preview Assets.xcassets */; };
+		0E453F49245FCEFC00A48209 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0E453F47245FCEFC00A48209 /* Main.storyboard */; };
+		0E453F52245FCFB100A48209 /* SceneKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F51245FCFB100A48209 /* SceneKitView.swift */; };
+		0E453F54245FCFED00A48209 /* ViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F53245FCFED00A48209 /* ViewData.swift */; };
+		0E453F562462280200A48209 /* DOFControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F552462280200A48209 /* DOFControllerView.swift */; };
+		0E453F582464646600A48209 /* RobotArm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F572464646600A48209 /* RobotArm.swift */; };
+		0E453F5A2469D47600A48209 /* USBInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F592469D47600A48209 /* USBInterface.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0E2735A32470349500A946D5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		0E453F3B245FCEFA00A48209 /* RoboticArm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoboticArm.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E453F3E245FCEFA00A48209 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0E453F40245FCEFA00A48209 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		0E453F42245FCEFC00A48209 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0E453F45245FCEFC00A48209 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		0E453F48245FCEFC00A48209 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0E453F4A245FCEFC00A48209 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0E453F4B245FCEFC00A48209 /* RoboticArm.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RoboticArm.entitlements; sourceTree = "<group>"; };
+		0E453F51245FCFB100A48209 /* SceneKitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneKitView.swift; sourceTree = "<group>"; };
+		0E453F53245FCFED00A48209 /* ViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewData.swift; sourceTree = "<group>"; };
+		0E453F552462280200A48209 /* DOFControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DOFControllerView.swift; sourceTree = "<group>"; };
+		0E453F572464646600A48209 /* RobotArm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotArm.swift; sourceTree = "<group>"; };
+		0E453F592469D47600A48209 /* USBInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBInterface.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0E453F38245FCEFA00A48209 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0E453F32245FCEFA00A48209 = {
+			isa = PBXGroup;
+			children = (
+				0E453F3D245FCEFA00A48209 /* RoboticArm */,
+				0E453F3C245FCEFA00A48209 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0E453F3C245FCEFA00A48209 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0E453F3B245FCEFA00A48209 /* RoboticArm.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0E453F3D245FCEFA00A48209 /* RoboticArm */ = {
+			isa = PBXGroup;
+			children = (
+				0E453F3E245FCEFA00A48209 /* AppDelegate.swift */,
+				0E453F40245FCEFA00A48209 /* ContentView.swift */,
+				0E2735A32470349500A946D5 /* MainView.swift */,
+				0E453F51245FCFB100A48209 /* SceneKitView.swift */,
+				0E453F552462280200A48209 /* DOFControllerView.swift */,
+				0E453F53245FCFED00A48209 /* ViewData.swift */,
+				0E453F572464646600A48209 /* RobotArm.swift */,
+				0E453F592469D47600A48209 /* USBInterface.swift */,
+				0E453F42245FCEFC00A48209 /* Assets.xcassets */,
+				0E453F47245FCEFC00A48209 /* Main.storyboard */,
+				0E453F4A245FCEFC00A48209 /* Info.plist */,
+				0E453F4B245FCEFC00A48209 /* RoboticArm.entitlements */,
+				0E453F44245FCEFC00A48209 /* Preview Content */,
+			);
+			path = RoboticArm;
+			sourceTree = "<group>";
+		};
+		0E453F44245FCEFC00A48209 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				0E453F45245FCEFC00A48209 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E453F3A245FCEFA00A48209 /* RoboticArm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0E453F4E245FCEFC00A48209 /* Build configuration list for PBXNativeTarget "RoboticArm" */;
+			buildPhases = (
+				0E453F37245FCEFA00A48209 /* Sources */,
+				0E453F38245FCEFA00A48209 /* Frameworks */,
+				0E453F39245FCEFA00A48209 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RoboticArm;
+			productName = RoboticArm;
+			productReference = 0E453F3B245FCEFA00A48209 /* RoboticArm.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0E453F33245FCEFA00A48209 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1140;
+				LastUpgradeCheck = 1140;
+				ORGANIZATIONNAME = "Kevin Coble";
+				TargetAttributes = {
+					0E453F3A245FCEFA00A48209 = {
+						CreatedOnToolsVersion = 11.4;
+					};
+				};
+			};
+			buildConfigurationList = 0E453F36245FCEFA00A48209 /* Build configuration list for PBXProject "RoboticArm" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0E453F32245FCEFA00A48209;
+			productRefGroup = 0E453F3C245FCEFA00A48209 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E453F3A245FCEFA00A48209 /* RoboticArm */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0E453F39245FCEFA00A48209 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E453F49245FCEFC00A48209 /* Main.storyboard in Resources */,
+				0E453F46245FCEFC00A48209 /* Preview Assets.xcassets in Resources */,
+				0E453F43245FCEFC00A48209 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0E453F37245FCEFA00A48209 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E453F562462280200A48209 /* DOFControllerView.swift in Sources */,
+				0E2735A42470349500A946D5 /* MainView.swift in Sources */,
+				0E453F41245FCEFA00A48209 /* ContentView.swift in Sources */,
+				0E453F3F245FCEFA00A48209 /* AppDelegate.swift in Sources */,
+				0E453F54245FCFED00A48209 /* ViewData.swift in Sources */,
+				0E453F52245FCFB100A48209 /* SceneKitView.swift in Sources */,
+				0E453F582464646600A48209 /* RobotArm.swift in Sources */,
+				0E453F5A2469D47600A48209 /* USBInterface.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0E453F47245FCEFC00A48209 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0E453F48245FCEFC00A48209 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0E453F4C245FCEFC00A48209 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		0E453F4D245FCEFC00A48209 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		0E453F4F245FCEFC00A48209 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RoboticArm/RoboticArm.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"RoboticArm/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = RoboticArm/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = com.MacRobotics.RoboticArm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		0E453F50245FCEFC00A48209 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RoboticArm/RoboticArm.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"RoboticArm/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = RoboticArm/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = com.MacRobotics.RoboticArm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0E453F36245FCEFA00A48209 /* Build configuration list for PBXProject "RoboticArm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E453F4C245FCEFC00A48209 /* Debug */,
+				0E453F4D245FCEFC00A48209 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0E453F4E245FCEFC00A48209 /* Build configuration list for PBXNativeTarget "RoboticArm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E453F4F245FCEFC00A48209 /* Debug */,
+				0E453F50245FCEFC00A48209 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0E453F33245FCEFA00A48209 /* Project object */;
+}
