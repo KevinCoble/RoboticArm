@@ -18,6 +18,7 @@
 		0E453F562462280200A48209 /* DOFControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F552462280200A48209 /* DOFControllerView.swift */; };
 		0E453F582464646600A48209 /* RobotArm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F572464646600A48209 /* RobotArm.swift */; };
 		0E453F5A2469D47600A48209 /* USBInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E453F592469D47600A48209 /* USBInterface.swift */; };
+		0EB1913D2475EC1400F41292 /* Denavit-Hartenberg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		0E453F552462280200A48209 /* DOFControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DOFControllerView.swift; sourceTree = "<group>"; };
 		0E453F572464646600A48209 /* RobotArm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotArm.swift; sourceTree = "<group>"; };
 		0E453F592469D47600A48209 /* USBInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBInterface.swift; sourceTree = "<group>"; };
+		0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Denavit-Hartenberg.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				0E453F552462280200A48209 /* DOFControllerView.swift */,
 				0E453F53245FCFED00A48209 /* ViewData.swift */,
 				0E453F572464646600A48209 /* RobotArm.swift */,
+				0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */,
 				0E453F592469D47600A48209 /* USBInterface.swift */,
 				0E453F42245FCEFC00A48209 /* Assets.xcassets */,
 				0E453F47245FCEFC00A48209 /* Main.storyboard */,
@@ -164,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E453F562462280200A48209 /* DOFControllerView.swift in Sources */,
+				0EB1913D2475EC1400F41292 /* Denavit-Hartenberg.swift in Sources */,
 				0E2735A42470349500A946D5 /* MainView.swift in Sources */,
 				0E453F41245FCEFA00A48209 /* ContentView.swift in Sources */,
 				0E453F3F245FCEFA00A48209 /* AppDelegate.swift in Sources */,

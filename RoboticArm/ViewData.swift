@@ -49,6 +49,11 @@ public final class ViewData: ObservableObject  {
     @Published var userDOFAngle8 = 0.0
     @Published var userDOFAngle9 = 0.0
     @Published var userDOFAngle10 = 0.0
+    
+    @Published var endEffectorX = 0.0
+    @Published var endEffectorY = 0.0
+    @Published var endEffectorZ = 0.0
+
 
     var robotArm = RobotArm()
     var usb: USBInterface!
@@ -175,6 +180,9 @@ public final class ViewData: ObservableObject  {
         
         //  Add a robot arm
         visualizationScene.rootNode.addChildNode(robotArm.make3DModel(wristRotate: wristRotate, gripperServoUp: gripperServoUp))
+        
+        //  Set the kinematic parameters for the arm
+        robotArm.setKinematics(wristRotate: wristRotate)
 
         //  Set the arm position
         robotArm.setArmPositions(elapsedTime: 0.0, DOFValues: getDOFValues())
@@ -186,7 +194,15 @@ public final class ViewData: ObservableObject  {
     
     func updateSimulation(elapsedTime: Double)
     {
+        //  Update the 3D model
         robotArm.setArmPositions(elapsedTime: elapsedTime, DOFValues: getDOFValues())
+        
+        //  Set the end effector output
+        DispatchQueue.main.async {
+            self.endEffectorX = self.robotArm.endEffectorHTM[3,0]
+            self.endEffectorY = self.robotArm.endEffectorHTM[3,1]
+            self.endEffectorZ = self.robotArm.endEffectorHTM[3,2]
+        }
     }
     
     func getDOFValues() -> [Double]
@@ -266,13 +282,13 @@ public final class ViewData: ObservableObject  {
         
         //  Send a command to center them all
         var servoCommands : [ServoCommand] = []
+        servoCommands.append(ServoCommand(servo: 0, position: 1500, speed: nil))
         servoCommands.append(ServoCommand(servo: 1, position: 1500, speed: nil))
         servoCommands.append(ServoCommand(servo: 2, position: 1500, speed: nil))
         servoCommands.append(ServoCommand(servo: 3, position: 1500, speed: nil))
         servoCommands.append(ServoCommand(servo: 4, position: 1500, speed: nil))
-        servoCommands.append(ServoCommand(servo: 5, position: 1500, speed: nil))
         if (hasWristRotate) {
-            servoCommands.append(ServoCommand(servo: 6, position: 1500, speed: nil))
+            servoCommands.append(ServoCommand(servo: 5, position: 1500, speed: nil))
         }
         usb.createAndSendCommand(servoCommands, time: nil)
         inMultipleMoveCommand = false

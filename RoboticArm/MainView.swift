@@ -14,30 +14,50 @@ struct MainView: View {
     var body: some View {
         HStack {
             VStack {
-                Text("Settings")
-                Divider()
-                Text("Robot Configuration")
-                Toggle("Has Wrist Rotate", isOn: $viewData.hasWristRotate)
-                .toggleStyle(DefaultToggleStyle())
-                Toggle("Gripper Servo Facing Up", isOn: $viewData.gripperServoUp)
-                .toggleStyle(DefaultToggleStyle())
-                Divider()
-                Text("Connection")
-                Picker(selection: $viewData.portConnection, label: Text("Port")
-                     , content: {
-                        ForEach(0 ..< viewData.portList.count) { index in
-                             Text(self.viewData.portList[index])
-                                 .tag(index)
-                         }
-                })
-                 .padding()
-                Picker(selection: $viewData.baudRateSelection, label: Text("Baud Rate")
-                     , content: {
-                         Text("9600").tag(0)
-                         Text("38400").tag(1)
-                         Text("115200").tag(2)
-                  })
-                 .padding()
+                VStack {
+                    Text("Settings")
+                    Divider()
+                    Text("Robot Configuration")
+                    Toggle("Has Wrist Rotate", isOn: $viewData.hasWristRotate)
+                    .toggleStyle(DefaultToggleStyle())
+                    Toggle("Gripper Servo Facing Up", isOn: $viewData.gripperServoUp)
+                    .toggleStyle(DefaultToggleStyle())
+                    Divider()
+                    Text("Connection")
+                    Picker(selection: $viewData.portConnection, label: Text("Port")
+                         , content: {
+                            ForEach(0 ..< viewData.portList.count) { index in
+                                 Text(self.viewData.portList[index])
+                                     .tag(index)
+                             }
+                    })
+                     .padding()
+                    Picker(selection: $viewData.baudRateSelection, label: Text("Baud Rate")
+                         , content: {
+                             Text("9600").tag(0)
+                             Text("38400").tag(1)
+                             Text("115200").tag(2)
+                      })
+                     .padding()
+                }
+                VStack {
+                    Text("Kinematics")
+                    Divider()
+                    HStack {
+                        Text("End Effector X: ")
+                        Text("\(viewData.endEffectorX)")
+                    }
+                    HStack {
+                        Text("End Effector Y: ")
+                        Text("\(viewData.endEffectorY)")
+                    }
+                    HStack {
+                        Text("End Effector Z: ")
+                        Text("\(viewData.endEffectorZ)")
+                    }
+                }
+                .border(Color.blue)
+                .padding()
             }
             .frame(width: 240.0, height: nil, alignment: Alignment.top)
             VStack {

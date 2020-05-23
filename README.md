@@ -15,8 +15,12 @@ It was built using XCode 11.4
 
 
 #### Additions I am working on...
-* Better forward kinematics
-* Inverse kenematics
+* Inverse kinematics
+* Servo angle calibration
 
 
+#### Image of Application in action
 ![](RoboticArm.png)
+
+#### Kinematic Diagram showing Denavit-Hartenberg Frames
+![](KinematicDiagram.png)

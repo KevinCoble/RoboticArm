@@ -43,10 +43,10 @@ class RobotArm
     var gripperNode : SCNNode?
     var rightFingerNode : SCNNode?
     var leftFingerNode : SCNNode?
-
-    var numDOF : Int {
-        get { return 3 }
-    }
+    
+    //  Kinematics
+    var dhParameters : [DenavitHartenberg] = []
+    var endEffectorHTM = matrix_identity_double4x4
 
     func make3DModel(wristRotate : Bool, gripperServoUp : Bool) -> SCNNode
     {
@@ -689,26 +689,73 @@ class RobotArm
         gripperNode!.rotation = SCNVector4Make(0.0, 0.0, 1.0, wristRotatorRadians)
     }
     
+    func setKinematics(wristRotate: Bool)
+    {
+        /*
+        Denavit - Hartenberg Parameters
+           θ - angle to rotate frame N-1 around axis Zn-1 to have Xn-1 point in same direction as Xn
+           α - angle to rotate frame N-1 around axis Xn to have Zn-1 point in same direction as Zn
+           r - distance between center of frame N-1 to center of frame N along axis Xn  (length of common normal)
+           d - distance between center of frame N-1 to center of frame N, along axis Zn-1               */
+
+ 
+        //  Clear the previous parameters
+        dhParameters = []
+        
+        //  Base reference frame is the bottom-center of the base.  Y in forward direction (to the right in the diagram), X to the right, Z up
+        
+        //  First transform is from the base rotator to the shoulder.
+        //  d1 is base to shoulder height - 73 mm
+        let p1 = DenavitHartenberg(variableParameter: .θ, θdegrees: 90.0, αdegrees: 90.0, r: 0.0, d: 0.073)
+        dhParameters.append(p1)
+        
+        //  Second transform is from the shoulder to the elbow.
+        //  d2 is shoulder to elbow distance - 144 mm
+        let p2 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: 0.0, r: -0.144, d: 0.0)
+        dhParameters.append(p2)
+        
+        //  Third transform is from the elbow to the wrist.
+        //  d3 is elbow to wrist distance - 184 mm
+        let p3 = DenavitHartenberg(variableParameter: .θ, θdegrees: 90.0, αdegrees: 0.0, r: 0.184, d: 0.0)
+        dhParameters.append(p3)
+        
+        //  Fourth transform is from the wrist to the wrist rotator.
+        //  d5 is wrist rotator offset distance - 6.8 mm (if there is a wrist rotate)
+        if (wristRotate) {
+            let p4 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: -90.0, r: 0.0, d: 0.0068)
+            dhParameters.append(p4)
+        }
+        else {
+            let p4 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: -90.0, r: 0.0, d: 0.0)
+            dhParameters.append(p4)
+        }
+        
+        //  Fifth transform is from the wrist rotator frame (moved back to even with wrist frame to match DH rules) to the center of the gripper.
+        //  d4 + d6 is distance from wrist to center of gripper - 106 mm if wrist rotate, 85.5 with no rotate
+        if (wristRotate) {
+            let p5 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: 90.0, r: 0.0, d: 0.106)
+            dhParameters.append(p5)
+        }
+        else {
+            let p5 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: 90.0, r: 0.0, d: 0.0855)
+            dhParameters.append(p5)
+            
+        }
+    }
+    
     func forwardKinematics() -> Bool
     {
-        let lengthUpperArm = 0.015
-        let lengthForeArm = 0.15
-        
-        //  Convert angles to radians
-        let shoulderRadians = shoulderAngle * Double.pi / 180.0
-        let elbowRadians = (elbowAngle + 90) * Double.pi / 180.0        //  Starts 90 degrees offset
-        
-        //  Get location of shoulder joint height
-        let zShoulder = baseHeight + baseToSwivelPlateGap + swivelPlateThickness + swivelPlateToShoulderPivot
+        //  Set up the variables
+        var variables = [Double](repeating: 0.0, count: 6)
+        variables[0] = -swivelAngle         //  Positive must be RHR around Z axis of frame 0
+        variables[1] = -shoulderAngle       //  Positive must be RHR around Z axis of frame 1
+        variables[2] = -elbowAngle          //  Positive must be RHR around Z axis of frame 2
+        variables[3] = -wristAngle          //  Positive must be RHR around Z axis of frame 3
+        variables[4] = wristRotateAngle
 
-        //  Get location of elbow joint, assuming no swivel (yet)
-        let yElbow = sin(shoulderRadians) * lengthUpperArm
-        let zElbow = zShoulder + cos(shoulderRadians) * lengthUpperArm
+        //  Run the matrix
+        endEffectorHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : variables, isInDegrees : true)
         
-        //  Get location of wrist joint, assuming no swivel (yet)
-        let yWrist = yElbow + sin(shoulderRadians + elbowRadians) * lengthForeArm
-        let zWrist = zElbow + cos(shoulderRadians + elbowRadians) * lengthForeArm
-        
-        return (zWrist < 0)
+        return false
     }
 }
