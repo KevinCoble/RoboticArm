@@ -53,6 +53,15 @@ public final class ViewData: ObservableObject  {
     @Published var endEffectorX = 0.0
     @Published var endEffectorY = 0.0
     @Published var endEffectorZ = 0.0
+    
+    @Published var desiredX = 0.0
+    @Published var desiredY = 0.0
+    @Published var desiredZ = 0.0
+    
+    //  Kinematic error alert
+//    @Published var showKinematicAlert = false     //  Actual alert was being instantiated repeatedly (error in SwiftUI?).  Switched to just text
+    @Published var kinematicAlertText = ""
+
 
 
     var robotArm = RobotArm()
@@ -258,8 +267,7 @@ public final class ViewData: ObservableObject  {
         if (inMultipleMoveCommand) { return }
         
         //  Convert angle to servo position
-        let scale = (angle + 90.0) / 180.0
-        let position = Int(scale * 2000.0) + 500
+        let position = robotArm.servoList[servo].getPulseWidthForAngleDegrees(angle)
         
         //  Create the command
         var servoCommands : [ServoCommand] = []
@@ -292,5 +300,53 @@ public final class ViewData: ObservableObject  {
         }
         usb.createAndSendCommand(servoCommands, time: nil)
         inMultipleMoveCommand = false
+    }
+    
+    func CheckPosition()
+    {
+        //  Try to find a solution
+        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : desiredX, desiredY : desiredY, desiredZ : desiredZ)
+        if (result.foundSolution) {
+            self.kinematicAlertText = "Solution Found"
+        }
+        else {
+            self.kinematicAlertText = "No Solution"
+        }
+    }
+    
+    func goToPosition()
+    {
+        //  Try to find a solution
+        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : desiredX, desiredY : desiredY, desiredZ : desiredZ)
+        if (result.foundSolution) {
+            inMultipleMoveCommand = true
+            //  Put the angles into the DOF settings (but convert DH rotation directions to servo directions)
+            userDOFAngle1 = -result.setting[0]  //  Positive must be RHR around Z axis of frame 0
+            userDOFAngle2 = -result.setting[1]  //  Positive must be RHR around Z axis of frame 1
+            userDOFAngle3 = -result.setting[2]  //  Positive must be RHR around Z axis of frame 2
+            userDOFAngle4 = -result.setting[3]  //  Positive must be RHR around Z axis of frame 3
+            
+            //  Get the servo commands
+            var servoCommands : [ServoCommand] = []
+            servoCommands.append(ServoCommand(servo: 0, position: robotArm.servoList[0].getPulseWidthForAngleDegrees(userDOFAngle1), speed: nil))
+            servoCommands.append(ServoCommand(servo: 1, position: robotArm.servoList[1].getPulseWidthForAngleDegrees(userDOFAngle2), speed: nil))
+            servoCommands.append(ServoCommand(servo: 2, position: robotArm.servoList[2].getPulseWidthForAngleDegrees(userDOFAngle3), speed: nil))
+            servoCommands.append(ServoCommand(servo: 3, position: robotArm.servoList[3].getPulseWidthForAngleDegrees(userDOFAngle4), speed: nil))
+
+            //  Calculate the total distance to travel
+            let distance = sqrt(((endEffectorX - desiredX) * (endEffectorX - desiredX)) + ((endEffectorY - desiredY) * (endEffectorY - desiredY)) + ((endEffectorZ - desiredZ) * (endEffectorZ - desiredZ)))
+            
+            //  Calculate the time (in millisecondes), using 20 cm/sec for a speed
+            let travelTime = Int(distance * 1000.0 / 0.2)
+
+            //  Send the commands
+            usb.createAndSendCommand(servoCommands, time: travelTime)
+
+            inMultipleMoveCommand = false
+            self.kinematicAlertText = "Command Sent"
+        }
+        else {
+            self.kinematicAlertText = "No Solution"
+        }
     }
 }

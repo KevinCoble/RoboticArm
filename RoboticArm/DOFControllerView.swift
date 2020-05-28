@@ -9,22 +9,20 @@
 import SwiftUI
 
 struct DOFControllerView: View {
-    var label : String
+    var servo : Servo
     @Binding var value : Double
-    var minValue : Double
-    var maxValue : Double
     
     var body: some View {
         VStack {
             HStack {
-                Text(label)
+                Text(servo.name)
                 Text("   ")
                 Text("\(value)")
             }
             HStack {
-                Text("\(Int(minValue))")
-                Slider(value: $value, in: minValue...maxValue)
-                Text("\(Int(maxValue))")
+                Text("\(Int(servo.minAngleDegrees))")
+                Slider(value: $value, in: servo.minAngleDegrees...servo.maxAngleDegrees)
+                Text("\(Int(servo.maxAngleDegrees))")
             }.padding()
         }.border(Color.blue)
     }
@@ -32,7 +30,8 @@ struct DOFControllerView: View {
 
 struct DOFControllerView_Previews: PreviewProvider {
     @State static var value = 0.0
+    static let servo = Servo(jointName: "Test", jointType: "HS-485HB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.18)
     static var previews: some View {
-        DOFControllerView(label: "Example", value: $value, minValue: -90.0, maxValue: 90.0)
+        DOFControllerView(servo: servo, value: $value)
     }
 }

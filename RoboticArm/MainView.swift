@@ -43,36 +43,76 @@ struct MainView: View {
                 VStack {
                     Text("Kinematics")
                     Divider()
-                    HStack {
-                        Text("End Effector X: ")
-                        Text("\(viewData.endEffectorX)")
+                    VStack {
+                        Text("Forward Kinematics")
+                        Divider()
+                        HStack {
+                            Text("End Effector X: ")
+                            Text("\(viewData.endEffectorX)")
+                        }
+                        HStack {
+                            Text("End Effector Y: ")
+                            Text("\(viewData.endEffectorY)")
+                        }
+                        HStack {
+                            Text("End Effector Z: ")
+                            Text("\(viewData.endEffectorZ)")
+                        }
                     }
-                    HStack {
-                        Text("End Effector Y: ")
-                        Text("\(viewData.endEffectorY)")
+                    .border(Color.blue)
+                    .padding()
+                    Divider()
+                    VStack {
+                        Text("Inverse Kinematics")
+                        Divider()
+                        HStack {
+                            Text("X: ")
+                            TextField("Desired X", value: $viewData.desiredX, formatter: DoubleFormatter())
+                        }
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        HStack {
+                            Text("Y: ")
+                            TextField("Desired Y", value: $viewData.desiredY, formatter: DoubleFormatter())
+                        }
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        HStack {
+                            Text("Z: ")
+                            TextField("Desired Z", value: $viewData.desiredZ, formatter: DoubleFormatter())
+                        }
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        HStack {
+                            Button("Check Position") {
+                                self.viewData.CheckPosition()
+                            }
+                            Button("Go To Position") {
+                                self.viewData.goToPosition()
+                            }
+                             
+                        }
+                        .padding()
+                        Text(viewData.kinematicAlertText)
+                             .foregroundColor(Color.red)
                     }
-                    HStack {
-                        Text("End Effector Z: ")
-                        Text("\(viewData.endEffectorZ)")
-                    }
+                    .border(Color.blue)
+                    .padding()
                 }
                 .border(Color.blue)
                 .padding()
             }
-            .frame(width: 240.0, height: nil, alignment: Alignment.top)
+            .frame(width: 320.0, height: nil, alignment: Alignment.top)
             VStack {
                 Text("Visualizer")
                 SceneView(scene: viewData.visualizationScene, viewData: viewData).frame(width: 600, height: 600, alignment: Alignment.center)
             }
             VStack {
                 Text("Controls")
-                DOFControllerView(label: "Swivel", value: $viewData.userDOFAngle1, minValue: -95.25, maxValue: 95.25)
-                DOFControllerView(label: "Shoulder", value: $viewData.userDOFAngle2, minValue: -99.75, maxValue: 99.75)
-                DOFControllerView(label: "Elbow", value: $viewData.userDOFAngle3, minValue: -101.0, maxValue: 80.0)
-                DOFControllerView(label: "Wrist", value: $viewData.userDOFAngle4, minValue: -90.0, maxValue: 90.0)
-                DOFControllerView(label: "Gripper", value: $viewData.userDOFAngle5, minValue: -90.0, maxValue: 90.0)
+                DOFControllerView(servo: viewData.robotArm.servoList[0], value: $viewData.userDOFAngle1)
+                DOFControllerView(servo: viewData.robotArm.servoList[1], value: $viewData.userDOFAngle2)
+                DOFControllerView(servo: viewData.robotArm.servoList[2], value: $viewData.userDOFAngle3)
+                DOFControllerView(servo: viewData.robotArm.servoList[3], value: $viewData.userDOFAngle4)
+                DOFControllerView(servo: viewData.robotArm.servoList[4], value: $viewData.userDOFAngle5)
                 if (viewData.hasWristRotate) {
-                    DOFControllerView(label: "Wrist Rotate", value: $viewData.userDOFAngle6, minValue: -90.0, maxValue: 90.0)
+                    DOFControllerView(servo: viewData.robotArm.servoList[05], value: $viewData.userDOFAngle6)
                 }
                 Button("Center All Servos") {
                     self.viewData.centerAllServos()

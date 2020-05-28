@@ -11,6 +11,9 @@ import SceneKit
 
 class RobotArm
 {
+    //  Servo list
+    let servoList : [Servo]
+    
     //  Dimensions for arm
     let baseBottomRadius = 0.05
     let baseTopRadius = 0.0475
@@ -47,6 +50,30 @@ class RobotArm
     //  Kinematics
     var dhParameters : [DenavitHartenberg] = []
     var endEffectorHTM = matrix_identity_double4x4
+    
+    init() {
+        //  Create the servo list
+        var list : [Servo] = []
+        let servo0 = Servo(jointName: "Base", jointType: "HS-485HB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.18)
+        servo0.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -90.0, longPulseAngleDegrees: 90.0)
+        list.append(servo0)
+        let servo1 = Servo(jointName: "Shoulder", jointType: "HS-805BB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.14)
+        servo1.setCalibrationAngles(centerPulseAngleDegrees: 6.0, shortPulseAngleDegrees: -90, longPulseAngleDegrees: 90.0)
+        list.append(servo1)
+        let servo2 = Servo(jointName: "Elbow", jointType: "HS-755HB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 70.0, rotationSpeed: 0.23)
+        servo2.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -90.0, longPulseAngleDegrees: 90)
+        list.append(servo2)
+        let servo3 = Servo(jointName: "Wrist", jointType: "HS-645MG", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.20)
+        servo3.setCalibrationAngles(centerPulseAngleDegrees: 2.0, shortPulseAngleDegrees: -90, longPulseAngleDegrees: 90.0)
+        list.append(servo3)
+        let servo4 = Servo(jointName: "Gripper", jointType: "HS-422", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.16)
+        list.append(servo4)
+        let servo5 = Servo(jointName: "Wrist Rotate", jointType: "HS-225MG", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.11)
+        servo5.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -90.0, longPulseAngleDegrees: 90.0)
+        list.append(servo5)
+
+        servoList = list
+    }
 
     func make3DModel(wristRotate : Bool, gripperServoUp : Bool) -> SCNNode
     {
@@ -572,18 +599,12 @@ class RobotArm
 
     func setArmPositions(elapsedTime : Double, DOFValues : [Double])
     {
-        //  Set the rotation rates
-        let swivelRotateRate = 333.3 //  In degrees per second
-        let shoulderRotateRate = 428.5 //  In degrees per second
-        let elbowRotateRate = 260.8 //  In degrees per second
-        let wristRotateRate = 260.8 //  In degrees per second       //!! fix
-        let gripperRotateRate = 260.8 //  In degrees per second       //!! fix
-        let wristRotatorRate = 260.8 //  In degrees per second       //!! fix
+        //  Initialize max difference
         var maxDifference = 0.0
 
         //  Adjust the swivel
         var swivelDifference = DOFValues[0] - swivelAngle
-        var timeToReachAngle = abs(swivelDifference) / swivelRotateRate        //  In seconds
+        var timeToReachAngle = abs(swivelDifference) / servoList[0].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             swivelDifference *= elapsedTime / timeToReachAngle
         }
@@ -591,7 +612,7 @@ class RobotArm
         
         //  Adjust the shoulder
         var shoulderDifference = DOFValues[1] - shoulderAngle
-        timeToReachAngle = abs(shoulderDifference) / shoulderRotateRate        //  In seconds
+        timeToReachAngle = abs(shoulderDifference) / servoList[1].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             shoulderDifference *= elapsedTime / timeToReachAngle
         }
@@ -599,7 +620,7 @@ class RobotArm
         
         //  Adjust the elbow
         var elbowDifference = DOFValues[2] - elbowAngle
-        timeToReachAngle = abs(elbowDifference) / elbowRotateRate        //  In seconds
+        timeToReachAngle = abs(elbowDifference) / servoList[2].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             elbowDifference *= elapsedTime / timeToReachAngle
         }
@@ -607,7 +628,7 @@ class RobotArm
         
         //  Adjust the wrist
         var wristDifference = DOFValues[3] - wristAngle
-        timeToReachAngle = abs(wristDifference) / wristRotateRate        //  In seconds
+        timeToReachAngle = abs(wristDifference) / servoList[3].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             wristDifference *= elapsedTime / timeToReachAngle
         }
@@ -615,7 +636,7 @@ class RobotArm
         
         //  Adjust the gripper
         var gripperDifference = DOFValues[4] - gripperAngle
-        timeToReachAngle = abs(gripperDifference) / gripperRotateRate        //  In seconds
+        timeToReachAngle = abs(gripperDifference) / servoList[4].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             gripperDifference *= elapsedTime / timeToReachAngle
         }
@@ -623,7 +644,7 @@ class RobotArm
 
         //  Adjust the wrist rotator
         var wristRotateDifference = DOFValues[5] - wristRotateAngle
-        timeToReachAngle = abs(wristDifference) / wristRotatorRate        //  In seconds
+        timeToReachAngle = abs(wristDifference) / servoList[5].rotateRate        //  In seconds
         if (timeToReachAngle > elapsedTime) {
             wristRotateDifference *= elapsedTime / timeToReachAngle
         }
@@ -737,7 +758,7 @@ class RobotArm
             dhParameters.append(p5)
         }
         else {
-            let p5 = DenavitHartenberg(variableParameter: .θ, θdegrees: -90.0, αdegrees: 90.0, r: 0.0, d: 0.0855)
+            let p5 = DenavitHartenberg(variableParameter: .None, θdegrees: -90.0, αdegrees: 90.0, r: 0.0, d: 0.0855)
             dhParameters.append(p5)
             
         }
@@ -756,6 +777,88 @@ class RobotArm
         //  Run the matrix
         endEffectorHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : variables, isInDegrees : true)
         
-        return false
+        return (endEffectorHTM[3, 2] < 0.01)     //  Z coordinate of center of end effector below 1 cm
+    }
+    
+    func inverseKinematics(initialDOFValues : [Double], desiredX : Double, desiredY : Double, desiredZ : Double) -> (foundSolution: Bool, setting: [Double])
+    {
+        /*
+         As the wrist rotate (if even included) only affects the orientation of the end effector (gripper), only the first four DOF angles need to be determined
+         We will use numerical differences to approximate the derivitives for the Jacobian, as we don't have a proper analytical solution for the HTM,
+         Use the derivitives to calculate next DOF angles to start with, and repeat until converged, or max iterations have occurred
+         
+         Δp ≅ ∂p/∂θ × Δθ   ==>  Δθ = (∂p/∂θ)⁻¹ × Δp    where: p - position,  θ - DOF angles
+         
+         However, we have a 4x3 matrix for the Jacobian (4 DOF, three position), so we have to use the pseudo inverse instead (A+)
+                            (AtA)⁻¹At = A+  (for linearly independent columns) or At(A At)⁻¹ = A+ (for linearly independent rows)
+                            where At is the transpose of the matrix, and A+ is the pseudo-inverse
+         
+         From https://homes.cs.washington.edu/~todorov/courses/cseP590/06_JacobianMethods.pdf
+         Where J(0) is the Jacobian, JT(0) is the transpose of the Jacobian, α is learning rate, x is position vector
+         Jacobian transpose method Δθ = αJT(θ)Δx
+         Jacobian inverse method  Δθ = αJT(θ)(J(θ)JT(θ))-1 Δx = J#Δx            J# is pseudo-inverse of Jacobian
+         
+         */
+        
+        //  Convert current DOF to radians for calcs, and if needed pad the DOF values with zeros for gripper/wristRotate
+        var currentDOFValues : [Double] = []
+        for angle in initialDOFValues {
+            currentDOFValues.append(angle * Double.pi / 180.0)
+        }
+        while (currentDOFValues.count < 6) { currentDOFValues.append(0.0) }
+        
+        for _ in 0...500 {       //  Max of 500 iterations
+            
+            //  Get the position of the current angle set using the forward kinematics
+            let currentHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : currentDOFValues, isInDegrees : false)
+            
+            //  Get the position error vector
+            var errorVector : [Double] = []
+            errorVector.append(desiredX - currentHTM[3,0])
+            errorVector.append(desiredY - currentHTM[3,1])
+            errorVector.append(desiredZ - currentHTM[3,2])
+            
+            //  Get the total error
+            let sum = errorVector.reduce(0) { $0 + fabs($1) }
+            if (sum < 0.0001) {     //  If within a tenth of a millimeter error, we are converged enough
+                //  Convert back to degrees
+                return (foundSolution: true, setting: currentDOFValues.map { $0 * 180.0 / Double.pi } )
+            }
+            
+            //  For each of the four DOF angles, add 0.001 radians, and get the change to the HTM
+            var Jacobian = matrix_double4x3()
+            for index in 0..<4 {
+                let save = currentDOFValues[index]
+                currentDOFValues[index] += 0.001
+                let deltaHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : currentDOFValues, isInDegrees : false)
+                for dim in 0..<3 {
+                    Jacobian[index, dim] = (deltaHTM[3, dim] - currentHTM[3, dim]) / 0.001
+                }
+                currentDOFValues[index] = save
+            }
+            
+            //  Now get the change to the angles by multiplying the pseudo-inverse of the Jacobian by the error vector
+            let vector = SIMD3<Double>(errorVector[0], errorVector[1], errorVector[2])
+            let Δθ = Jacobian.pseudoInverse() * vector
+
+            //  Update the angles
+            for dof in 0..<4 {
+                currentDOFValues[dof] += Δθ[dof] * 0.1      //  One-tenth for alpha (learning rate)
+            }
+        }
+
+        return (foundSolution: false, setting: initialDOFValues)    //  If we failed to converge, return the original position
+    }
+}
+
+extension matrix_double4x3
+{
+    func pseudoInverse() -> matrix_double3x4
+    {
+        //  A+ = At(AAt)⁻¹       where At is the transpose of the matrix, and A+ is the pseudo-inverse
+        let transpose = self.transpose
+        let product = self * transpose
+        let inverse = product.inverse
+        return transpose * inverse
     }
 }
