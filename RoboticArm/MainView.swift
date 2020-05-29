@@ -42,6 +42,13 @@ struct MainView: View {
                 }
                 VStack {
                     Text("Kinematics")
+                    Picker(selection: $viewData.kinematicUnits, label:
+                        Text("Units")
+                        , content: {
+                            Text("m").tag(0)
+                            Text("cm").tag(1)
+                            Text("mm").tag(2)
+                    }).pickerStyle(SegmentedPickerStyle())
                     Divider()
                     VStack {
                         Text("Forward Kinematics")

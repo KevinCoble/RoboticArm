@@ -50,6 +50,8 @@ public final class ViewData: ObservableObject  {
     @Published var userDOFAngle9 = 0.0
     @Published var userDOFAngle10 = 0.0
     
+    @Published var kinematicUnits = 0
+    
     @Published var endEffectorX = 0.0
     @Published var endEffectorY = 0.0
     @Published var endEffectorZ = 0.0
@@ -208,9 +210,12 @@ public final class ViewData: ObservableObject  {
         
         //  Set the end effector output
         DispatchQueue.main.async {
-            self.endEffectorX = self.robotArm.endEffectorHTM[3,0]
-            self.endEffectorY = self.robotArm.endEffectorHTM[3,1]
-            self.endEffectorZ = self.robotArm.endEffectorHTM[3,2]
+            var multiplier = 1.0
+            if (self.kinematicUnits == 1) { multiplier = 100.0 }
+            if (self.kinematicUnits == 2) { multiplier = 1000.0 }
+            self.endEffectorX = self.robotArm.endEffectorHTM[3,0] * multiplier
+            self.endEffectorY = self.robotArm.endEffectorHTM[3,1] * multiplier
+            self.endEffectorZ = self.robotArm.endEffectorHTM[3,2] * multiplier
         }
     }
     
@@ -304,8 +309,15 @@ public final class ViewData: ObservableObject  {
     
     func CheckPosition()
     {
+        var multiplier = 1.0
+        if (self.kinematicUnits == 1) { multiplier = 0.01 }
+        if (self.kinematicUnits == 2) { multiplier = 0.001 }
+        let x = desiredX * multiplier
+        let y = desiredY * multiplier
+        let z = desiredZ * multiplier
+
         //  Try to find a solution
-        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : desiredX, desiredY : desiredY, desiredZ : desiredZ)
+        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
         if (result.foundSolution) {
             self.kinematicAlertText = "Solution Found"
         }
@@ -316,8 +328,15 @@ public final class ViewData: ObservableObject  {
     
     func goToPosition()
     {
+        var multiplier = 1.0
+        if (self.kinematicUnits == 1) { multiplier = 0.01 }
+        if (self.kinematicUnits == 2) { multiplier = 0.001 }
+        let x = desiredX * multiplier
+        let y = desiredY * multiplier
+        let z = desiredZ * multiplier
+
         //  Try to find a solution
-        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : desiredX, desiredY : desiredY, desiredZ : desiredZ)
+        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
         if (result.foundSolution) {
             inMultipleMoveCommand = true
             //  Put the angles into the DOF settings (but convert DH rotation directions to servo directions)
@@ -334,7 +353,7 @@ public final class ViewData: ObservableObject  {
             servoCommands.append(ServoCommand(servo: 3, position: robotArm.servoList[3].getPulseWidthForAngleDegrees(userDOFAngle4), speed: nil))
 
             //  Calculate the total distance to travel
-            let distance = sqrt(((endEffectorX - desiredX) * (endEffectorX - desiredX)) + ((endEffectorY - desiredY) * (endEffectorY - desiredY)) + ((endEffectorZ - desiredZ) * (endEffectorZ - desiredZ)))
+            let distance = sqrt(((endEffectorX - x) * (endEffectorX - x)) + ((endEffectorY - y) * (endEffectorY - y)) + ((endEffectorZ - z) * (endEffectorZ - z)))
             
             //  Calculate the time (in millisecondes), using 20 cm/sec for a speed
             let travelTime = Int(distance * 1000.0 / 0.2)
