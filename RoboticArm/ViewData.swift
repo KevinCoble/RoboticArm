@@ -56,6 +56,8 @@ public final class ViewData: ObservableObject  {
     @Published var endEffectorY = 0.0
     @Published var endEffectorZ = 0.0
     
+    @Published var verticalEndEffector = false
+    
     @Published var desiredX = 0.0
     @Published var desiredY = 0.0
     @Published var desiredZ = 0.0
@@ -235,6 +237,22 @@ public final class ViewData: ObservableObject  {
         return DOFValues
     }
     
+    func getDH_DOFValues() -> [Double]      //  Angles for Denavit-Hartenberg
+    {
+        var DOFValues : [Double] = []
+        DOFValues.append(userDOFAngle1 * -1.0)
+        DOFValues.append(userDOFAngle2 * -1.0)
+        DOFValues.append(userDOFAngle3 * -1.0)
+        DOFValues.append(userDOFAngle4 * -1.0)
+        DOFValues.append(userDOFAngle5)
+        DOFValues.append(userDOFAngle6)
+        DOFValues.append(userDOFAngle7)
+        DOFValues.append(userDOFAngle8)
+        DOFValues.append(userDOFAngle9)
+        DOFValues.append(userDOFAngle10)
+        return DOFValues
+    }
+
     public func setSelectedPort(_ portIndex : Int)
     {
         //  Close any existing port
@@ -315,9 +333,15 @@ public final class ViewData: ObservableObject  {
         let x = desiredX * multiplier
         let y = desiredY * multiplier
         let z = desiredZ * multiplier
-
+        
         //  Try to find a solution
-        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        var result : (foundSolution: Bool, setting: [Double])
+        if (verticalEndEffector) {
+            result = robotArm.inverseKinematicsVertical(initialDOFValues : getDH_DOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        }
+        else {
+            result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        }
         if (result.foundSolution) {
             self.kinematicAlertText = "Solution Found"
         }
@@ -336,7 +360,13 @@ public final class ViewData: ObservableObject  {
         let z = desiredZ * multiplier
 
         //  Try to find a solution
-        let result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        var result : (foundSolution: Bool, setting: [Double])
+        if (verticalEndEffector) {
+            result = robotArm.inverseKinematicsVertical(initialDOFValues : getDH_DOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        }
+        else {
+            result = robotArm.inverseKinematics(initialDOFValues : getDOFValues(), desiredX : x, desiredY : y, desiredZ : z)
+        }
         if (result.foundSolution) {
             inMultipleMoveCommand = true
             //  Put the angles into the DOF settings (but convert DH rotation directions to servo directions)

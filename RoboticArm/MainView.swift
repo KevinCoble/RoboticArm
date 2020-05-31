@@ -31,14 +31,14 @@ struct MainView: View {
                                      .tag(index)
                              }
                     })
-                     .padding()
+                     .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                     Picker(selection: $viewData.baudRateSelection, label: Text("Baud Rate")
                          , content: {
                              Text("9600").tag(0)
                              Text("38400").tag(1)
                              Text("115200").tag(2)
                       })
-                     .padding()
+                     .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                 }
                 VStack {
                     Text("Kinematics")
@@ -87,6 +87,7 @@ struct MainView: View {
                             TextField("Desired Z", value: $viewData.desiredZ, formatter: DoubleFormatter())
                         }
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        Toggle("Vertical Gripper", isOn: $viewData.verticalEndEffector)
                         HStack {
                             Button("Check Position") {
                                 self.viewData.CheckPosition()

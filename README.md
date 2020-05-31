@@ -24,12 +24,13 @@ The parameters in the setCalibrationAngles calls in the file RobotArm.swift can 
 * The port drop-down list selection does not update after program initialization, so a restart will be required if the arm is not plugged in prior to starting the program.
 * You do not have to have the SSC-32U powered for the port to appear, just to move the servos.
 * If the program is not talking to the arm, you may reset the port connection by re-selecting the port from the drop-down list (even if there is only one port in the list)
+* The simulation stops if the end effector is calculated (by forward kinematics) to be below the surface.  Reset by centering all servos
 * Make sure you hit return after entering the last coordinate for the inverse kinematics before clicking the button, else the value is not entered and the old value is used!
 * There was a problem of infinite alert dialogs when I tried to use one for feedback on the inverse kinematics (error in SwiftUI?), so just a text field appears at the bottom-left of the window
 
 
 #### Additions I am working on...
-* Inverse kinematics with conditions (vertical/horizontal wrist)
+* Gripper force feedback
 
 
 #### Image of Application in action

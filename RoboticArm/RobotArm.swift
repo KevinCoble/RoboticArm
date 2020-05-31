@@ -55,16 +55,16 @@ class RobotArm
         //  Create the servo list
         var list : [Servo] = []
         let servo0 = Servo(jointName: "Base", jointType: "HS-485HB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.18)
-        servo0.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -90.0, longPulseAngleDegrees: 90.0)
+        servo0.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -95.0, longPulseAngleDegrees: 95.0)
         list.append(servo0)
         let servo1 = Servo(jointName: "Shoulder", jointType: "HS-805BB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.14)
-        servo1.setCalibrationAngles(centerPulseAngleDegrees: 6.0, shortPulseAngleDegrees: -90, longPulseAngleDegrees: 90.0)
+        servo1.setCalibrationAngles(centerPulseAngleDegrees: 6.0, shortPulseAngleDegrees: -100.0, longPulseAngleDegrees: 95.0)
         list.append(servo1)
         let servo2 = Servo(jointName: "Elbow", jointType: "HS-755HB", minimumAngleDegrees: -90.0, maximumAngleDegrees: 70.0, rotationSpeed: 0.23)
-        servo2.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -90.0, longPulseAngleDegrees: 90)
+        servo2.setCalibrationAngles(centerPulseAngleDegrees: 0.0, shortPulseAngleDegrees: -96.0, longPulseAngleDegrees: 100.0)
         list.append(servo2)
         let servo3 = Servo(jointName: "Wrist", jointType: "HS-645MG", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.20)
-        servo3.setCalibrationAngles(centerPulseAngleDegrees: 2.0, shortPulseAngleDegrees: -90, longPulseAngleDegrees: 90.0)
+        servo3.setCalibrationAngles(centerPulseAngleDegrees: 2.0, shortPulseAngleDegrees: -100.0, longPulseAngleDegrees: 90.0)
         list.append(servo3)
         let servo4 = Servo(jointName: "Gripper", jointType: "HS-422", minimumAngleDegrees: -90.0, maximumAngleDegrees: 90.0, rotationSpeed: 0.16)
         list.append(servo4)
@@ -808,7 +808,6 @@ class RobotArm
         while (currentDOFValues.count < 6) { currentDOFValues.append(0.0) }
         
         for _ in 0...500 {       //  Max of 500 iterations
-            
             //  Get the position of the current angle set using the forward kinematics
             let currentHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : currentDOFValues, isInDegrees : false)
             
@@ -840,6 +839,66 @@ class RobotArm
             //  Now get the change to the angles by multiplying the pseudo-inverse of the Jacobian by the error vector
             let vector = SIMD3<Double>(errorVector[0], errorVector[1], errorVector[2])
             let Δθ = Jacobian.pseudoInverse() * vector
+
+            //  Update the angles
+            for dof in 0..<4 {
+                currentDOFValues[dof] += Δθ[dof] * 0.1      //  One-tenth for alpha (learning rate)
+            }
+        }
+
+        return (foundSolution: false, setting: initialDOFValues)    //  If we failed to converge, return the original position
+    }
+    
+    func inverseKinematicsVertical(initialDOFValues : [Double], desiredX : Double, desiredY : Double, desiredZ : Double) -> (foundSolution: Bool, setting: [Double])
+    {
+        /*
+         In the 4x4 Homogeneous Transformation Matrix (HTM), the angle of the Y axis of the end effector frame is column 1.
+         As we want it relative to the Z axis (but negative, so pointing down) of the base frame, we will use:
+         [1,2] - end effector y axis relative to base axis Z axis.  If -1, then vertical down
+         This gives us a 4x4 Jacobian matrix, so a regular inverse can be used
+         */
+        
+        //  Convert current DOF to radians for calcs, and if needed pad the DOF values with zeros for gripper/wristRotate
+        var currentDOFValues : [Double] = []
+        for angle in initialDOFValues {
+            currentDOFValues.append(angle * Double.pi / 180.0)
+        }
+        while (currentDOFValues.count < 6) { currentDOFValues.append(0.0) }
+        
+        for _ in 0...500 {       //  Max of 500 iterations
+            //  Get the position of the current angle set using the forward kinematics
+            let currentHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : currentDOFValues, isInDegrees : false)
+            
+            //  Get the position error vector
+            var errorVector : [Double] = []
+            errorVector.append(desiredX - currentHTM[3,0])
+            errorVector.append(desiredY - currentHTM[3,1])
+            errorVector.append(desiredZ - currentHTM[3,2])
+            errorVector.append(-1 - currentHTM[1,2])
+
+            //  Get the total error
+            let sum = errorVector.reduce(0) { $0 + fabs($1) }
+            if (sum < 0.0002) {     //  If within a tenth of a millimeter error and a ten-thousandth of a radian, we are converged enough
+                //  Convert back to degrees
+                return (foundSolution: true, setting: currentDOFValues.map { $0 * 180.0 / Double.pi } )
+            }
+            
+            //  For each of the four DOF angles, add 0.001 radians, and get the change to the HTM
+            var Jacobian = matrix_double4x4()
+            for index in 0..<4 {
+                let save = currentDOFValues[index]
+                currentDOFValues[index] += 0.001
+                let deltaHTM = DenavitHartenberg.matrix(parameters : dhParameters, variables : currentDOFValues, isInDegrees : false)
+                for dim in 0..<3 {
+                    Jacobian[index, dim] = (deltaHTM[3, dim] - currentHTM[3, dim]) / 0.001
+                }
+                Jacobian[index, 3] = (deltaHTM[1, 2] - currentHTM[1, 2]) / 0.001
+                currentDOFValues[index] = save
+            }
+            
+            //  Now get the change to the angles by multiplying the pseudo-inverse of the Jacobian by the error vector
+            let vector = SIMD4<Double>(errorVector[0], errorVector[1], errorVector[2], errorVector[3])
+            let Δθ = Jacobian.inverse * vector
 
             //  Update the angles
             for dof in 0..<4 {
