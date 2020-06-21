@@ -9,10 +9,12 @@ It was built using XCode 11.4
 * Control of arm through USB port
 * Forward kinematics
 * Inverse kinematics
+* Optional Gripper force sensor - plot, grip-to-pressure-limit
 
 #### Important notes
 * Note:  You must install the FTDI drivers for this program to talk to the arm.  The link to get the drivers is [here](http://www.ftdichip.com/Drivers/VCP.htm).
 * The program is not sandboxed (talking to USB devices directly is discouraged in security models)
+* Gripper sensor is tied to analog input 'H' on the SSC-32U
 
 #### Servo Calibration
 The parameters in the setCalibrationAngles calls in the file RobotArm.swift can be used to calibrate servo angles to the pulse width being sent by the SSC-32U.  The following procedure is used:
@@ -30,7 +32,7 @@ The parameters in the setCalibrationAngles calls in the file RobotArm.swift can 
 
 
 #### Additions I am working on...
-* Gripper force feedback
+* Visual feedback from camera
 
 
 #### Image of Application in action

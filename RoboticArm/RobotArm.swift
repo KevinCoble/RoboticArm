@@ -14,6 +14,9 @@ class RobotArm
     //  Servo list
     let servoList : [Servo]
     
+    //  Gripper
+    let gripper = Gripper(initalGripperServoSetting: 0.0)
+    
     //  Dimensions for arm
     let baseBottomRadius = 0.05
     let baseTopRadius = 0.0475
@@ -29,7 +32,6 @@ class RobotArm
     let wristToGripper = 0.0574 - (0.0626 - 0.0410)
     let padThickness = 0.0027
     let gripperPlateThickness : CGFloat = 0.00225       //  Should match value from makeGripper for finger movement positioning
-    let fingerMovementRange = 0.016
 
 
     var swivelAngle = 0.0
@@ -701,7 +703,8 @@ class RobotArm
         wristNode!.rotation = SCNVector4Make(1.0, 0.0, 0.0, wristRadians)
         
         //  Set the gripper finger positions
-        let fingerMovement = fingerMovementRange * (gripperAngle + 90.0) / 180.0
+        gripper.setFingerPosition(gripperServoSetting: gripperAngle)
+        let fingerMovement = gripper.fingerLocation
         rightFingerNode!.position = SCNVector3(x: CGFloat(fingerMovement + padThickness), y: gripperPlateThickness * -0.5, z: 0.0)
         leftFingerNode!.position = SCNVector3(x: CGFloat(-(fingerMovement + padThickness)), y: gripperPlateThickness * -0.5, z: 0.0)
 

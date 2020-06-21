@@ -22,6 +22,8 @@ struct MainView: View {
                     .toggleStyle(DefaultToggleStyle())
                     Toggle("Gripper Servo Facing Up", isOn: $viewData.gripperServoUp)
                     .toggleStyle(DefaultToggleStyle())
+                    Toggle("Gripper Sensor (Analog H)", isOn: $viewData.gripperSensor)
+                    .toggleStyle(DefaultToggleStyle())
                     Divider()
                     Text("Connection")
                     Picker(selection: $viewData.portConnection, label: Text("Port")
@@ -97,7 +99,7 @@ struct MainView: View {
                             }
                              
                         }
-                        .padding()
+                        .padding(EdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10))
                         Text(viewData.kinematicAlertText)
                              .foregroundColor(Color.red)
                     }
@@ -126,6 +128,20 @@ struct MainView: View {
                     self.viewData.centerAllServos()
                 }
                 .padding()
+                if (viewData.gripperSensor) {
+                    HStack() {
+                        Image(viewData.plotImage, scale: 1.0, label: Text("Pressure"))
+                        VStack() {
+                            Stepper("Grip Limit \(Int(viewData.gripperLimit))", value: $viewData.gripperLimit, in: 0...255)
+                            Button("Grip To Limit") {
+                                self.viewData.gripToLimit()
+                            }
+                            Button("Release Grip") {
+                                self.viewData.releaseGrip()
+                            }
+                        }
+                    }
+                }
             }
             .frame(width: 350.0, height: nil, alignment: Alignment.top)
             .padding()

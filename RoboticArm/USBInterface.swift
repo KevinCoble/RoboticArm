@@ -29,6 +29,8 @@ public class USBInterface
     var selectedSerialDevice : String = ""
     var baudRate = BaudRate.B9600
     var fileDescriptor : Int32 = -1
+    let usbQueue = DispatchQueue(label: "USB communication")
+
 
     // Hold the original termios attributes so we can reset them
     var gOriginalTTYAttrs: termios = termios()
@@ -250,19 +252,73 @@ public class USBInterface
         writeCommand(commandData)
     }
     
+    func getAnalogInputs(_ inputIDs : [Character]) -> [UInt8]?
+    {
+        //  Create a data object
+        var commandData = Data(capacity: inputIDs.count * 2 + 2)
+        
+        //  Add each request
+        for id in inputIDs {
+            commandData.append(0x56)    //  V
+            commandData.append(id.asciiValue!)    //  analog input ID
+        }
+        
+        //  Add a carriage return
+        commandData.append(0x0D)    //  <cr>
+
+        //  Write the command and get the response
+        if let response = writeCommandWaitForResponse(commandData, responseSize: inputIDs.count) {
+            let array = [UInt8](response)
+            return array
+        }
+        return nil
+    }
+    
     func writeCommand(_ commandData : Data)
     {
         //  Verify we are connected
         if (fileDescriptor < 0) { return }
         
         //  Send the bytes
-        commandData.withUnsafeBytes { rawBufferPointer in
-            let rawPtr = rawBufferPointer.baseAddress!
-            let numBytes = write(fileDescriptor, rawPtr, commandData.count)
-            if (numBytes < 0) {
-                print("Error sending command")
+        usbQueue.sync {
+            commandData.withUnsafeBytes { rawBufferPointer in
+                let rawPtr = rawBufferPointer.baseAddress!
+                let numBytes = write(fileDescriptor, rawPtr, commandData.count)
+                if (numBytes < 0) {
+                    print("Error sending command")
+                }
             }
         }
+    }
+    
+    func writeCommandWaitForResponse(_ commandData : Data, responseSize: Int) -> Data?
+    {
+        //  Verify we are connected
+        if (fileDescriptor < 0) { return nil }
+        
+        var data : Data? = nil
+        usbQueue.sync {
+            //  Send the bytes
+            commandData.withUnsafeBytes { rawBufferPointer in
+                let rawPtr = rawBufferPointer.baseAddress!
+                let numBytes = write(fileDescriptor, rawPtr, commandData.count)
+                if (numBytes < 0) {
+                    print("Error sending command")
+                }
+            }
+            
+            //  Get the response
+            let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: responseSize)
+            defer {
+                buffer.deallocate()
+            }
+            let bytesRead = read(fileDescriptor, buffer, responseSize)
+            if (bytesRead > 0) {
+                data = Data(bytes: buffer, count: bytesRead)
+            }
+        }
+
+        return data
     }
 }
 

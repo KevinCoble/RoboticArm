@@ -23,7 +23,7 @@ struct DOFControllerView: View {
                 Text("\(Int(servo.minAngleDegrees))")
                 Slider(value: $value, in: servo.minAngleDegrees...servo.maxAngleDegrees)
                 Text("\(Int(servo.maxAngleDegrees))")
-            }.padding()
+            }.padding(EdgeInsets(top: 0, leading: 10, bottom: 5, trailing: 10))
         }.border(Color.blue)
     }
 }

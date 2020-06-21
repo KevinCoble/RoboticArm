@@ -29,6 +29,7 @@ public final class ViewData: ObservableObject  {
     
     @Published var hasWristRotate : Bool = true
     @Published var gripperServoUp : Bool = true
+    @Published var gripperSensor : Bool = true
     @Published var portConnection : Int = 0
     @Published var baudRateSelection : Int = 0
     @Published var portList : [String] = ["None Found"]
@@ -50,6 +51,9 @@ public final class ViewData: ObservableObject  {
     @Published var userDOFAngle9 = 0.0
     @Published var userDOFAngle10 = 0.0
     
+    let pressurePlot = TimePlot<PressureReading>(timeFrame: 10.0, autoscale: false)
+    @Published var plotImage : CGImage
+    
     @Published var kinematicUnits = 0
     
     @Published var endEffectorX = 0.0
@@ -66,6 +70,7 @@ public final class ViewData: ObservableObject  {
 //    @Published var showKinematicAlert = false     //  Actual alert was being instantiated repeatedly (error in SwiftUI?).  Switched to just text
     @Published var kinematicAlertText = ""
 
+    @Published var gripperLimit = 128.0
 
 
     var robotArm = RobotArm()
@@ -84,10 +89,16 @@ public final class ViewData: ObservableObject  {
     private var DOF5Changed: AnyCancellable?
     private var DOF6Changed: AnyCancellable?
     
+    private var GripperLimitChanged: AnyCancellable?
+
     private var inMultipleMoveCommand = false
 
     init()
     {
+        //  Initialize the plot image to an unknown image
+        let image = NSImage(named:"al5d-ns")!
+        var imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        plotImage = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)!
 
         //  Create the USB interace
         usb = USBInterface()
@@ -146,9 +157,26 @@ public final class ViewData: ObservableObject  {
         DOF6Changed = self.$userDOFAngle6   //  Wrist Rotate
             .throttle(for: .milliseconds(90), scheduler: q, latest: true)
             .sink(receiveCompletion: { print ($0) }, receiveValue: { self.sendServoPosition(5, $0) } )
+        
+        //  Set up the gripper limit change subscriber
+        GripperLimitChanged = self.$gripperLimit
+            .sink(receiveCompletion: { print ($0) }, receiveValue: { self.pressurePlot.limitLine = $0 } )
 
         //  Set the initial 3D scene
         update3DScene(wristRotate : hasWristRotate, gripperServoUp : gripperServoUp)
+        
+        //  Set the scale for the pressure plot
+        pressurePlot.minValue = 0.0
+        pressurePlot.maxValue = 255.0
+        
+        //  Start a timer to get the gripper pressure reading
+        let timer = Timer(timeInterval: 0.1, repeats: true) { timer in
+            q.async {
+                self.getGripperPressure()
+            }
+        }
+        RunLoop.current.add(timer, forMode: RunLoop.Mode.common)
+
     }
     
     public func update3DScene(wristRotate : Bool, gripperServoUp : Bool)
@@ -210,14 +238,31 @@ public final class ViewData: ObservableObject  {
         //  Update the 3D model
         robotArm.setArmPositions(elapsedTime: elapsedTime, DOFValues: getDOFValues())
         
+        //  Get the units multiplier
+        var multiplier = 1.0
+        if (self.kinematicUnits == 1) { multiplier = 100.0 }
+        if (self.kinematicUnits == 2) { multiplier = 1000.0 }
+        
+        //  See if something changed
+        var valueChanged = false;
+        if (fabs(endEffectorX - robotArm.endEffectorHTM[3,0] * multiplier) > 0.00001) { valueChanged = true }
+        if (fabs(endEffectorY - robotArm.endEffectorHTM[3,1] * multiplier) > 0.00001) { valueChanged = true }
+        if (fabs(endEffectorZ - robotArm.endEffectorHTM[3,2] * multiplier) > 0.00001) { valueChanged = true }
+
         //  Set the end effector output
-        DispatchQueue.main.async {
-            var multiplier = 1.0
-            if (self.kinematicUnits == 1) { multiplier = 100.0 }
-            if (self.kinematicUnits == 2) { multiplier = 1000.0 }
-            self.endEffectorX = self.robotArm.endEffectorHTM[3,0] * multiplier
-            self.endEffectorY = self.robotArm.endEffectorHTM[3,1] * multiplier
-            self.endEffectorZ = self.robotArm.endEffectorHTM[3,2] * multiplier
+        if (valueChanged) {
+            DispatchQueue.main.async {
+                self.endEffectorX = self.robotArm.endEffectorHTM[3,0] * multiplier
+                self.endEffectorY = self.robotArm.endEffectorHTM[3,1] * multiplier
+                self.endEffectorZ = self.robotArm.endEffectorHTM[3,2] * multiplier
+            }
+        }
+        
+        //  If there is a gripper command occuring, set the gripper position
+        if let gripperAngle = robotArm.gripper.getGripperServoAngle(currentGripperServoAngle: userDOFAngle5) {
+            DispatchQueue.main.async {
+                self.userDOFAngle5 = gripperAngle
+            }
         }
     }
     
@@ -397,5 +442,43 @@ public final class ViewData: ObservableObject  {
         else {
             self.kinematicAlertText = "No Solution"
         }
+    }
+    
+    func getGripperPressure()
+    {
+        let currentTime = Date()
+        
+        //  Read the value from the usb interface
+        if let bytes = usb.getAnalogInputs(["H"]) {
+            //  Update the gripper object
+            let pressure = Double(bytes[0])
+            robotArm.gripper.setPressure(pressure)
+            
+            //  Add the data to the plot
+            let newValue = PressureReading(time: Date(), pressure: pressure)
+            pressurePlot.addPoint(newValue)
+            
+            //  Remove points that have moved out
+            pressurePlot.removeOldPoints(startTime: currentTime - pressurePlot.timeWidth)
+        }
+        
+        let size = CGSize(width: 200.0, height: 150.0)
+        if let image = pressurePlot.getPlotImage(size: size, endTime: currentTime) {
+            DispatchQueue.main.async {
+                self.plotImage = image
+            }
+        }
+    }
+    
+    func gripToLimit()
+    {
+        //  Close to the limit pressure
+        robotArm.gripper.state = .ClosingToPressure(pressure: gripperLimit)
+    }
+    
+    func releaseGrip()
+    {
+        //  Open at full speed to full distance
+        robotArm.gripper.state = .Opening
     }
 }

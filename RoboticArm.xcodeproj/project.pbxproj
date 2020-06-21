@@ -21,6 +21,8 @@
 		0EB1913D2475EC1400F41292 /* Denavit-Hartenberg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */; };
 		0EB1913F2479ACA300F41292 /* Servo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB1913E2479ACA300F41292 /* Servo.swift */; };
 		0EB19141247CC83200F41292 /* DoubleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB19140247CC83200F41292 /* DoubleFormatter.swift */; };
+		0EB191432489FE7900F41292 /* PressurePlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB191422489FE7900F41292 /* PressurePlot.swift */; };
+		0EEB691224967CB700630373 /* Gripper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB691124967CB700630373 /* Gripper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,8 @@
 		0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Denavit-Hartenberg.swift"; sourceTree = "<group>"; };
 		0EB1913E2479ACA300F41292 /* Servo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Servo.swift; sourceTree = "<group>"; };
 		0EB19140247CC83200F41292 /* DoubleFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleFormatter.swift; sourceTree = "<group>"; };
+		0EB191422489FE7900F41292 /* PressurePlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressurePlot.swift; sourceTree = "<group>"; };
+		0EEB691124967CB700630373 /* Gripper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gripper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,9 +85,11 @@
 				0E453F53245FCFED00A48209 /* ViewData.swift */,
 				0E453F572464646600A48209 /* RobotArm.swift */,
 				0EB1913E2479ACA300F41292 /* Servo.swift */,
+				0EEB691124967CB700630373 /* Gripper.swift */,
 				0EB1913C2475EC1400F41292 /* Denavit-Hartenberg.swift */,
 				0E453F592469D47600A48209 /* USBInterface.swift */,
 				0EB19140247CC83200F41292 /* DoubleFormatter.swift */,
+				0EB191422489FE7900F41292 /* PressurePlot.swift */,
 				0E453F42245FCEFC00A48209 /* Assets.xcassets */,
 				0E453F47245FCEFC00A48209 /* Main.storyboard */,
 				0E453F4A245FCEFC00A48209 /* Info.plist */,
@@ -177,12 +183,14 @@
 				0E2735A42470349500A946D5 /* MainView.swift in Sources */,
 				0EB19141247CC83200F41292 /* DoubleFormatter.swift in Sources */,
 				0E453F41245FCEFA00A48209 /* ContentView.swift in Sources */,
+				0EB191432489FE7900F41292 /* PressurePlot.swift in Sources */,
 				0E453F3F245FCEFA00A48209 /* AppDelegate.swift in Sources */,
 				0E453F54245FCFED00A48209 /* ViewData.swift in Sources */,
 				0E453F52245FCFB100A48209 /* SceneKitView.swift in Sources */,
 				0EB1913F2479ACA300F41292 /* Servo.swift in Sources */,
 				0E453F582464646600A48209 /* RobotArm.swift in Sources */,
 				0E453F5A2469D47600A48209 /* USBInterface.swift in Sources */,
+				0EEB691224967CB700630373 /* Gripper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
